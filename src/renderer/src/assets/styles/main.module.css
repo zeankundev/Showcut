@@ -55,3 +55,44 @@
   -webkit-user-drag: none;
   user-select: none;
 }
+.main-view {
+  display: flex;
+  flex-grow: 1;
+}
+.side-pane {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  gap: 10px;
+}
+.side-pane-button {
+  appearance: none;
+  border: none;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  border-radius: 10px;
+  background-color: var(--color-background);
+}
+.side-pane-button img {
+  width: 24px;
+  height: 24px;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.side-pane-button.active,
+.side-pane-button:hover {
+  background-color: var(--color-secondary-background);
+}
+.home {
+  padding-top: 10px;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.home h1 {
+  font-weight: 800;
+}
