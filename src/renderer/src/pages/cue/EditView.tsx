@@ -120,7 +120,7 @@ const EditView: React.FC<EditViewProps> = ({
               {/* Camera Badge */}
               <div className={styles['camera-badge-wrapper']}>
                 <div
-                  className={`${styles['camera-badge']} ${styles[getCameraColor(cue.camera)]} ${cue.color === 'white' ? styles['camera-badge-white-text'] : styles['camera-badge-black-text']}`}
+                  className={`${styles['camera-badge']} ${styles[getCameraColor(cue.camera)]} ${styles['camera-badge-black-text']}`}
                 >
                   {cue.camera}
                 </div>
@@ -187,16 +187,6 @@ const EditView: React.FC<EditViewProps> = ({
                 <button onClick={onCameraPaletteOpen} className={styles['camera-settings-button']}>
                   Camera {selectedCue.camera}
                 </button>
-                <select
-                  value={selectedCue.color}
-                  onChange={(e) =>
-                    updateCue({ ...selectedCue, color: e.target.value as 'black' | 'white' })
-                  }
-                  className={styles['color-select']}
-                >
-                  <option value="white">White</option>
-                  <option value="black">Black</option>
-                </select>
               </div>
             </div>
           </div>

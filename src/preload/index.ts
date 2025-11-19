@@ -17,7 +17,9 @@ const api = {
     exists: (path: string) => fs.existsSync(path)
   },
   dialog: {
-    openVideo: () => ipcRenderer.invoke('dialog:openVideo')
+    openVideo: () => ipcRenderer.invoke('dialog:openVideo'),
+    openProject: () => ipcRenderer.invoke('dialog:openProject'),
+    saveProject: () => ipcRenderer.invoke('dialog:saveProject')
   }
 }
 

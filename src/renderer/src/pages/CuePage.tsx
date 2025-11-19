@@ -6,9 +6,12 @@ import { updateTitle } from '@renderer/TitleUpdater'
 import CueTimeline from './cue/CueTimeline'
 import MediaPreview from './cue/MediaPreview'
 import EditView from './cue/EditView'
+import CameraPallete from './cue/CameraPallete'
 const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
   const [doc, setDoc] = useState<CueDocument>(cueDoc)
   const [cues, setCues] = useState<Cue[]>(cueDoc.cues)
+  const [filePath, setFilePath] = useState<string>('')
+  const [projectPath, setProjectPath] = useState<string>('')
   const [videoURL, setVideoURL] = useState<string>('')
   const [duration, setDuration] = useState<number>(0)
   const [currentTime, setCurrentTime] = useState<number>(0)
@@ -27,7 +30,7 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
     isPlayingRef.current = isPlaying
     durationRef.current = duration
   }, [cues, currentTime, isPlaying, duration])
-  //updateTitle(doc.num, doc.title)
+  updateTitle(doc.num, doc.title)
   const handleFileLoad = async (filePath: string): Promise<void> => {
     console.log(`[CuePage] Loaded file: ${filePath}`)
     setDoc({ ...doc, videoPath: filePath })
@@ -40,6 +43,7 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
       setCurrentTime(0)
       setIsPlaying(false)
       setSelectedCueId(null)
+      setFilePath(filePath)
     } catch (e) {
       console.error('[CuePage] Error loading video file:', e)
     }
@@ -220,6 +224,21 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
     setCues(newCues)
     setSelectedCueId(null)
   }
+  const handleSave = async (): Promise<void> => {
+    const savedData: CueDocument = {
+      num: 1,
+      title: 'Untitled Cue',
+      videoPath: filePath,
+      framerate: 24,
+      cues: cues
+    }
+    console.log(JSON.stringify(savedData))
+    const path = await window.api.dialog.saveProject()
+    if (path) {
+      console.log(path)
+      window.api.fs.writeFile(path, JSON.stringify(savedData))
+    }
+  }
   return (
     <div className={styles['cue-editor-main']}>
       {doc.videoPath == '' ? (
@@ -256,9 +275,23 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
             onScrub={handleScrub}
             isPlaying={isPlaying}
             onPlayPause={handlePlayPause}
+            onSave={handleSave}
             setSelectedCueId={setSelectedCueId}
             videoRef={videoRef}
           />
+          {isPalleteOpen && selectedCueId && (
+            <CameraPallete
+              selectedCamera={cues.find((c) => c.id === selectedCueId)?.camera || 1}
+              onSelect={(cam) => {
+                const cue = cues.find((c) => c.id === selectedCueId)
+                if (cue) {
+                  updateCue({ ...cue, camera: cam })
+                }
+                setIsPalleteOpen(false)
+              }}
+              onClose={() => setIsPalleteOpen(false)}
+            />
+          )}
         </>
       )}
     </div>

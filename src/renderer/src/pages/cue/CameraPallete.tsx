@@ -16,13 +16,16 @@ const CameraPallete: React.FC<CameraPalleteProps> = ({ onSelect, onClose, select
         {cameras.map((camera) => (
           <button
             key={camera}
-            className={`${styles['camera-pallete-button']} ${getCameraColor(camera)}${selectedCamera === camera ? ' ' + styles['selected'] : ''}`}
+            className={`${styles['camera-pallete-button']} ${styles[getCameraColor(camera)]}${selectedCamera === camera ? ' ' + styles['selected'] : ''}`}
             onClick={() => onSelect(camera)}
           >
             <b>{camera}</b>
           </button>
         ))}
       </div>
+      <button className={styles['closer']} onClick={onClose}>
+        Close
+      </button>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { getCameraColor } from '@renderer/constants'
 import PlayIcon from '@renderer/assets/img/play.svg'
 import PauseIcon from '@renderer/assets/img/pause.svg'
 import styles from '../../assets/styles/editor.module.css'
+import SaveIcon from '@renderer/assets/img/save.svg'
 
 interface CueTimelineProps {
   cues: Cue[]
@@ -12,6 +13,7 @@ interface CueTimelineProps {
   onScrub: (time: number) => void
   isPlaying: boolean
   onPlayPause: () => void
+  onSave: () => void
   setSelectedCueId: (id: string | null) => void
   videoRef: React.RefObject<HTMLVideoElement>
 }
@@ -72,6 +74,7 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
   onScrub,
   isPlaying,
   onPlayPause,
+  onSave,
   setSelectedCueId,
   videoRef
 }) => {
@@ -201,6 +204,9 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
       <div className={styles['cue-timeline-toolbar']}>
         <button onClick={onPlayPause} className={styles['cue-timeline-button']}>
           <img src={isPlaying ? PauseIcon : PlayIcon} width={16} />
+        </button>
+        <button onClick={onSave} className={styles['cue-timeline-button']}>
+          <img src={SaveIcon} width={16} />
         </button>
         <div className={styles['cue-timeline-zoom']}>
           <label>Zoom:</label>

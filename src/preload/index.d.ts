@@ -13,6 +13,8 @@ declare global {
       }
       dialog: {
         openVideo: () => Promise<string | null>
+        openProject: () => Promise<string | null>
+        saveProject: () => Promise<string | null>
       }
     }
   }

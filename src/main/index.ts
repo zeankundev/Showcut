@@ -70,6 +70,26 @@ function createWindow(): void {
     }
     return null
   })
+  ipcMain.handle('dialog:saveProject', async () => {
+    const res = await dialog.showSaveDialog(mainWindow, {
+      filters: [{ name: 'Showcut Projects', extensions: ['scp'] }]
+    })
+    if (!res.canceled && res.filePath.length > 0) {
+      return res.filePath
+    }
+    return null
+  })
+  ipcMain.handle('dialog:openProject', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile'],
+      filters: [{ name: 'Showcut Projects', extensions: ['scp'] }]
+    })
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      return result.filePaths[0]
+    }
+    return null
+  })
 }
 
 // This method will be called when Electron has finished

@@ -117,7 +117,19 @@
   height: 89% !important; /* OVERRIDE: Fill parent */
   overflow: hidden !important; /* OVERRIDE: Clip video */
 }
-
+.cue-timeline-button {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border: none;
+  background-color: var(--color-background);
+  border-radius: 5px;
+}
+.cue-timeline-button:hover {
+  background-color: var(--color-secondary-background);
+}
 /*
  * =========================================
  * Cue Timeline (Bottom Bar) Overrides
@@ -134,7 +146,7 @@
   user-select: none;
   /* OVERRIDE: Force a fixed, non-growing height */
   flex-shrink: 0 !important;
-  height: 230px !important; /* Adjust if needed, but this is a stable height */
+  height: calc(40% - 24px); /* Adjust if needed, but this is a stable height */
   /* OVERRIDE: Prevents internal timeline content from overflowing vertically */
   overflow: hidden !important;
 }
@@ -253,6 +265,7 @@
   /* OVERRIDE: This prevents text from wrapping and breaking the layout */
   overflow: hidden !important;
   white-space: nowrap !important;
+  border-radius: 5px;
 }
 
 /* * ADDED: This class was used in CueTimeline.tsx but missing from the CSS.
@@ -302,6 +315,7 @@
   flex-shrink: 0; /* Prevents shrinking */
   /* OVERRIDE: Clip all internal content */
   overflow: hidden !important;
+  border-right: 1px solid var(--color-muted);
 }
 
 .cue-list-scroll-area {
@@ -449,8 +463,7 @@
 
 .editor-footer {
   padding: 0.5rem;
-  border-top: 1px solid #4a5568;
-  background-color: #333;
+  background-color: var(--color-secondary-background);
   flex-shrink: 0;
   /* MODIFIED: Give it a non-growing height */
   height: 8rem;
@@ -583,4 +596,43 @@
   color: #a0aec0;
   font-size: 0.875rem;
   font-style: italic;
+}
+.camera-pallete-picker {
+  position: absolute;
+  top: 100px;
+  left: 360px;
+  background-color: var(--color-background);
+  padding: 10px;
+  z-index: 30;
+  border: 1px solid var(--color-muted);
+  border-radius: 15px;
+}
+.camera-pallete-grid {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  /* Creates 4 rows, each taking up an equal fraction of the available space. */
+  grid-template-rows: repeat(4, 1fr);
+  word-wrap: break-word;
+  max-width: 20%;
+}
+.camera-pallete-button {
+  appearance: none;
+  border: none;
+  color: var(--color-foreground);
+  padding: 10px;
+  border-radius: 10px;
+  font-family: 'Cantarell', sans-serif;
+  cursor: pointer;
+  font-weight: 800;
+}
+.camera-pallete-picker .closer {
+  appearance: none;
+  background-color: var(--color-secondary-background);
+  border: none;
+  padding: 10px;
+  color: var(--color-foreground);
+  border-radius: 10px;
 }
