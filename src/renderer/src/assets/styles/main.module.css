@@ -1,0 +1,37 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+.header .logo-container {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+.header img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.window-controls {
+  display: flex;
+  align-self: flex-end;
+  align-items: center;
+}
+.window-buttons {
+  width: 42px;
+  height: 42px;
+  appearance: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-background);
+}
+.window-buttons:hover {
+  background-color: var(--color-secondary-background);
+}
+.window-buttons img {
+  width: 16px;
+  height: 16px;
+  -webkit-user-drag: none;
+  user-select: none;
+}

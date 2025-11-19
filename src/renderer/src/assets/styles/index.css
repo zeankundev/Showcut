@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'Cantarell';
+  src: url('../fonts/cantarell.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+}
+:root {
+  --color-background: #1e1e1e;
+  --color-secondary-background: #2c2c2c;
+  --color-tertiary-background: #3a3a3a;
+  --color-foreground: #f0f0f0;
+  --color-accent: #ff6f61;
+  --color-accent-hover: #ff3b2e;
+  --color-border: #333333;
+  --color-muted: #777777;
+}
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Cantarell', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
