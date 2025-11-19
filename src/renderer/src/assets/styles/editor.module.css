@@ -134,7 +134,7 @@
   user-select: none;
   /* OVERRIDE: Force a fixed, non-growing height */
   flex-shrink: 0 !important;
-  height: 120px !important; /* Adjust if needed, but this is a stable height */
+  height: 230px !important; /* Adjust if needed, but this is a stable height */
   /* OVERRIDE: Prevents internal timeline content from overflowing vertically */
   overflow: hidden !important;
 }
@@ -298,7 +298,7 @@
   /* OVERRIDE: Fill parent's height */
   height: 100% !important;
   /* MODIFIED: Set a fixed width */
-  width: 450px; /* Adjust as needed */
+  width: 48%; /* Adjust as needed */
   flex-shrink: 0; /* Prevents shrinking */
   /* OVERRIDE: Clip all internal content */
   overflow: hidden !important;
@@ -310,7 +310,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  background-color: #1a1a1a;
+  background-color: var(--color-background);
   /* Fix for flex overflow */
   max-height: 280px;
 }
@@ -318,7 +318,6 @@
 .cue-row-base {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #2d3748;
   height: 3rem;
   cursor: pointer;
   transition-property: background-color;
@@ -326,15 +325,19 @@
 }
 
 .cue-row-base:hover {
-  background-color: #2d3748;
+  background-color: var(--color-secondary-background);
+}
+
+.cue-row-base.active-cue .waterfall-viz {
+  background-color: var(--color-secondary-background);
 }
 
 .cue-row-selected {
-  background-color: rgba(30, 58, 138, 0.3);
+  background-color: var(--color-secondary-background);
 }
 
 .active-cue {
-  background-color: #2d3748;
+  background-color: var(--color-secondary-background);
 }
 
 .cue-index {
@@ -379,13 +382,11 @@
 }
 
 .cue-duration {
-  width: 4rem;
   text-align: right;
-  padding-left: 0.5rem;
   padding-right: 0.5rem;
   font-family: monospace;
   color: #cbd5e0;
-  font-size: 0.875rem;
+  font-size: 12pt;
   flex-shrink: 0; /* ADDED */
 }
 
@@ -396,24 +397,30 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 0.875rem;
+  font-size: 13pt;
   color: #cbd5e0;
   min-width: 0; /* ADDED */
 }
 
 .active-cue .cue-description {
   color: #fff;
-  font-weight: 500;
+  font-weight: 800;
 }
 
 .waterfall-viz {
-  width: 40%;
+  width: 100%;
   height: 100%;
   position: relative;
-  border-left: 1px solid #4a5568;
   overflow: hidden;
-  background-color: #111;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-background);
   flex-shrink: 0; /* ADDED */
+}
+
+.waterfall-cue-lister {
+  display: flex;
+  z-index: 20;
 }
 
 .cue-bar {

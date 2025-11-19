@@ -120,20 +120,18 @@ const EditView: React.FC<EditViewProps> = ({
               {/* Camera Badge */}
               <div className={styles['camera-badge-wrapper']}>
                 <div
-                  className={`${styles['camera-badge']} ${getCameraColor(cue.camera)} ${cue.color === 'white' ? styles['camera-badge-white-text'] : styles['camera-badge-black-text']}`}
+                  className={`${styles['camera-badge']} ${styles[getCameraColor(cue.camera)]} ${cue.color === 'white' ? styles['camera-badge-white-text'] : styles['camera-badge-black-text']}`}
                 >
                   {cue.camera}
                 </div>
               </div>
 
-              {/* Duration */}
-              <div className={styles['cue-duration']}>{formatDuration(duration)}</div>
-
-              {/* Description */}
-              <div className={styles['cue-description']}>{cue.description || 'New Cue'}</div>
-
               {/* Waterfall Visualization */}
               <div className={styles['waterfall-viz']}>
+                <div className={styles['waterfall-cue-lister']}>
+                  <div className={styles['cue-duration']}>{formatDuration(duration)}</div>
+                  <div className={styles['cue-description']}>{cue.description || 'New Cue'}</div>
+                </div>
                 {/* The Cue Bar (Moving via RAF) */}
                 <div
                   ref={(el) => {
