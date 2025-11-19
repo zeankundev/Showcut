@@ -36,6 +36,13 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  mainWindow.webContents.send('isMaximized', mainWindow.isMaximized())
+  ipcMain.on('minimize', () => mainWindow.minimize())
+  ipcMain.on('toggle-max', () => {
+    mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
+    mainWindow.webContents.send('isMaximized', mainWindow.isMaximized())
+  })
+  ipcMain.on('close', () => mainWindow.close())
 }
 
 // This method will be called when Electron has finished

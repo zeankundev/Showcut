@@ -11,6 +11,26 @@
   -webkit-user-drag: none;
   user-select: none;
 }
+.cue-box-label {
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  border: 3px solid var(--color-foreground);
+  fill: var(--color-background);
+  paint-order: stroke fill;
+  font-size: 11pt;
+  font-weight: 800;
+  border-radius: 5px;
+}
+.window-electron-dragger {
+  -webkit-app-region: drag;
+  flex-grow: 1;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
 .window-controls {
   display: flex;
   align-self: flex-end;
