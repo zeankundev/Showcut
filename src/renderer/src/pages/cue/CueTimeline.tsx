@@ -56,9 +56,16 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
     return () => cancelAnimationFrame(animationFrameId)
   }, [duration, videoRef, currentTime])
 
-  const calculateSnappedTime = (clientX: number, rect: DOMRect) => {
+  const calculateSnappedTime = (clientX: number, contentEl: HTMLDivElement) => {
+    const rect = contentEl.getBoundingClientRect()
+    const scrollLeft = contentEl.scrollLeft
+    const scrollWidth = contentEl.scrollWidth // This is the total zoomed wid
+    // 1. Find click position relative to the visible part of the container
     const x = clientX - rect.left
-    const rawTime = (x / rect.width) * duration
+    // 2. Account for scroll position to get click position on total zoomed content
+    const pixelOffset = x + scrollLeft
+    // 3. Calculate time based on total zoomed width (scrollWidth)
+    const rawTime = (pixelOffset / scrollWidth) * duration
     const clampedTime = Math.max(0, Math.min(rawTime, duration))
 
     // Snapping logic: 15px visual threshold
@@ -88,15 +95,12 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     if (!contentRef.current || duration === 0) return
-    const rect = contentRef.current.getBoundingClientRect()
-
-    const time = calculateSnappedTime(e.clientX, rect)
+    const time = calculateSnappedTime(e.clientX, contentRef.current)
     onScrub(time)
 
     const onMouseMove = (moveEvent: globalThis.MouseEvent) => {
       if (!contentRef.current || duration === 0) return
-      const r = contentRef.current.getBoundingClientRect()
-      const t = calculateSnappedTime(moveEvent.clientX, r)
+      const t = calculateSnappedTime(moveEvent.clientX, contentRef.current)
       onScrub(t)
     }
 
@@ -134,6 +138,7 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
             type="range"
             min={1}
             max={20}
+            step={0.1}
             value={zoom}
             onChange={(e) => setZoom(Number(e.target.value))}
           />
@@ -178,18 +183,17 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
               return (
                 <div
                   key={cue.id}
-                  className={styles['cue-timeline-cue']}
+                  className={styles['cue-timeline-cue'] + ' ' + styles[color]}
                   style={{
                     left: `${startPct}%`,
-                    width: `${widthPct}%`,
-                    backgroundColor: color,
-                    borderColor: 'black'
+                    width: `${widthPct}%`
                   }}
                   onClick={(e) => {
                     e.stopPropagation()
                     setSelectedCueId(cue.id)
                   }}
                 >
+                  <span className={styles['cue-box-label']}>{cue.camera}</span> &nbsp;&nbsp;
                   <span className={styles['cue-timeline-cue-label']}>{cue.description}</span>
                 </div>
               )
