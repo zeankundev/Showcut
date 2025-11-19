@@ -1,0 +1,206 @@
+import React, { useRef, MouseEvent, useMemo, useState, useEffect } from 'react'
+import { Cue } from '@renderer/constants'
+import { getCameraColor } from '@renderer/constants'
+import PlayIcon from '@renderer/assets/img/play.svg'
+import PauseIcon from '@renderer/assets/img/pause.svg'
+import styles from '../../assets/styles/editor.module.css'
+
+interface CueTimelineProps {
+  cues: Cue[]
+  duration: number
+  currentTime: number
+  onScrub: (time: number) => void
+  isPlaying: boolean
+  onPlayPause: () => void
+  setSelectedCueId: (id: string | null) => void
+  videoRef: React.RefObject<HTMLVideoElement>
+}
+
+const formatTimeMarker = (time: number): string => {
+  const minutes = Math.floor(time / 60)
+  const seconds = Math.floor(time % 60)
+    .toString()
+    .padStart(2, '0')
+  return `${minutes}:${seconds}`
+}
+
+const CueTimeline: React.FC<CueTimelineProps> = ({
+  cues,
+  duration,
+  currentTime,
+  onScrub,
+  isPlaying,
+  onPlayPause,
+  setSelectedCueId,
+  videoRef
+}) => {
+  const [zoom, setZoom] = useState(1) // 1x to 20x
+  const contentRef = useRef<HTMLDivElement>(null)
+  const playheadRef = useRef<HTMLDivElement>(null)
+
+  // Playhead Animation Loop
+  useEffect(() => {
+    let animationFrameId: number
+
+    const updatePlayhead = () => {
+      if (duration > 0 && playheadRef.current) {
+        // Prefer the actual video time for 60fps smoothness, fallback to prop
+        const time = videoRef.current ? videoRef.current.currentTime : currentTime
+        const pct = (time / duration) * 100
+        playheadRef.current.style.left = `${pct}%`
+      }
+      animationFrameId = requestAnimationFrame(updatePlayhead)
+    }
+
+    updatePlayhead()
+    return () => cancelAnimationFrame(animationFrameId)
+  }, [duration, videoRef, currentTime])
+
+  const calculateSnappedTime = (clientX: number, rect: DOMRect) => {
+    const x = clientX - rect.left
+    const rawTime = (x / rect.width) * duration
+    const clampedTime = Math.max(0, Math.min(rawTime, duration))
+
+    // Snapping logic: 15px visual threshold
+    const snapThresholdPx = 15
+    const snapThresholdSec = (snapThresholdPx / rect.width) * duration
+
+    let bestTime = clampedTime
+    let minDistance = snapThresholdSec
+
+    // Check distance to all cue start/end times
+    cues.forEach((cue) => {
+      const distStart = Math.abs(cue.startTime - clampedTime)
+      if (distStart < minDistance) {
+        minDistance = distStart
+        bestTime = cue.startTime
+      }
+
+      const distEnd = Math.abs(cue.endTime - clampedTime)
+      if (distEnd < minDistance) {
+        minDistance = distEnd
+        bestTime = cue.endTime
+      }
+    })
+
+    return bestTime
+  }
+
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    if (!contentRef.current || duration === 0) return
+    const rect = contentRef.current.getBoundingClientRect()
+
+    const time = calculateSnappedTime(e.clientX, rect)
+    onScrub(time)
+
+    const onMouseMove = (moveEvent: globalThis.MouseEvent) => {
+      if (!contentRef.current || duration === 0) return
+      const r = contentRef.current.getBoundingClientRect()
+      const t = calculateSnappedTime(moveEvent.clientX, r)
+      onScrub(t)
+    }
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('mouseup', onMouseUp)
+    }
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
+  }
+
+  const timeMarkers = useMemo(() => {
+    if (!duration) return []
+    const markers = []
+    // Adjust interval based on zoom to keep markers readable
+    // Base interval is ~1/15th of duration at 1x zoom.
+    // As zoom increases, we decrease the interval to show more detail.
+    const baseInterval = duration / 15
+    const interval = Math.max(1, Math.floor(baseInterval / zoom))
+
+    for (let i = 0; i <= duration; i += interval) {
+      markers.push(i)
+    }
+    return markers
+  }, [duration, zoom])
+  return (
+    <div className={styles['cue-timeline-container']}>
+      <div className={styles['cue-timeline-toolbar']}>
+        <button onClick={onPlayPause} className={styles['cue-timeline-button']}>
+          <img src={isPlaying ? PauseIcon : PlayIcon} width={16} />
+        </button>
+        <div className={styles['cue-timeline-zoom']}>
+          <label>Zoom:</label>
+          <input
+            type="range"
+            min={1}
+            max={20}
+            value={zoom}
+            onChange={(e) => setZoom(Number(e.target.value))}
+          />
+        </div>
+      </div>
+      <div
+        className={styles['cue-timeline-content']}
+        ref={contentRef}
+        onMouseDown={handleMouseDown}
+        style={{ overflowX: 'auto' }}
+      >
+        <div
+          className={styles['cue-timeline-inner']}
+          style={{ width: `${zoom * 100}%`, position: 'relative' }}
+        >
+          {/* Time Markers */}
+          <div className={styles['cue-timeline-markers']}>
+            {timeMarkers.map((time) => {
+              const pct = (time / duration) * 100
+              return (
+                <div
+                  key={time}
+                  className={styles['cue-timeline-marker']}
+                  style={{ left: `${pct}%` }}
+                >
+                  <div className={styles['cue-timeline-marker-line']} />
+                  <div className={styles['cue-timeline-marker-label']}>
+                    {formatTimeMarker(time)}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Cues */}
+          <div className={styles['cue-timeline-cues']}>
+            {cues.map((cue) => {
+              const startPct = (cue.startTime / duration) * 100
+              const endPct = (cue.endTime / duration) * 100
+              const widthPct = endPct - startPct
+              const color = getCameraColor(cue.camera)
+              return (
+                <div
+                  key={cue.id}
+                  className={styles['cue-timeline-cue']}
+                  style={{
+                    left: `${startPct}%`,
+                    width: `${widthPct}%`,
+                    backgroundColor: color,
+                    borderColor: 'black'
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setSelectedCueId(cue.id)
+                  }}
+                >
+                  <span className={styles['cue-timeline-cue-label']}>{cue.description}</span>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Playhead */}
+          <div className={styles['cue-timeline-playhead']} ref={playheadRef} />
+        </div>
+      </div>
+    </div>
+  )
+}
+export default CueTimeline

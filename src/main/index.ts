@@ -21,6 +21,17 @@ function createWindow(): void {
     }
   })
 
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src 'self' blob:; img-src 'self' blob: data:; connect-src 'self' ws: wss:;"
+        ]
+      }
+    })
+  })
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })

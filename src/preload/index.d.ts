@@ -5,7 +5,7 @@ declare global {
     electron: ElectronAPI
     api: {
       fs: {
-        readFile: (path: string, encoding: string) => string
+        readFile: (path: string, encoding?: string) => Buffer | string
         writeFile: (path: string, data: string) => void
         readdir: (path: string) => string[]
         stat: (path: string) => any

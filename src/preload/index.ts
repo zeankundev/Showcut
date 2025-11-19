@@ -5,7 +5,12 @@ import fs from 'fs'
 // Custom APIs for renderer
 const api = {
   fs: {
-    readFile: (path: string, encoding: string) => fs.readFileSync(path, encoding as BufferEncoding),
+    readFile: (path: string, encoding?: string) => {
+      if (encoding) {
+        return fs.readFileSync(path, encoding as BufferEncoding)
+      }
+      return fs.readFileSync(path) // Returns Buffer by default
+    },
     writeFile: (path: string, data: string) => fs.writeFileSync(path, data),
     readdir: (path: string) => fs.readdirSync(path),
     stat: (path: string) => fs.statSync(path),
@@ -16,9 +21,6 @@ const api = {
   }
 }
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)

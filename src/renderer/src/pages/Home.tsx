@@ -7,6 +7,8 @@ const Home = ({
   onPassCueDocument: (cue: CueDocument) => void
 }): React.ReactElement => {
   const initialCueDocument: CueDocument = {
+    title: 'Untitled Cue',
+    num: 1,
     videoPath: '',
     framerate: 24,
     cues: []

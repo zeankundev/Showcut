@@ -8,6 +8,8 @@ export interface Cue {
 }
 
 export interface CueDocument {
+  title: string
+  num: number
   videoPath: string
   framerate: number // in fps
   cues: Cue[]
