@@ -3,6 +3,17 @@ import { ElectronAPI } from '@electron-toolkit/preload'
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: unknown
+    api: {
+      fs: {
+        readFile: (path: string, encoding: string) => string
+        writeFile: (path: string, data: string) => void
+        readdir: (path: string) => string[]
+        stat: (path: string) => any
+        exists: (path: string) => boolean
+      }
+      dialog: {
+        openVideo: () => Promise<string | null>
+      }
+    }
   }
 }

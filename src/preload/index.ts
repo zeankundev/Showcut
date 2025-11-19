@@ -1,8 +1,20 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import fs from 'fs'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  fs: {
+    readFile: (path: string, encoding: string) => fs.readFileSync(path, encoding as BufferEncoding),
+    writeFile: (path: string, data: string) => fs.writeFileSync(path, data),
+    readdir: (path: string) => fs.readdirSync(path),
+    stat: (path: string) => fs.statSync(path),
+    exists: (path: string) => fs.existsSync(path)
+  },
+  dialog: {
+    openVideo: () => ipcRenderer.invoke('dialog:openVideo')
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

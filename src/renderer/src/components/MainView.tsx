@@ -4,6 +4,7 @@ import CuesIcon from '../assets/img/cues.svg'
 import { useState } from 'react'
 import Home from '../pages/Home'
 import CuePage from '../pages/CuePage'
+import { CueDocument } from '@renderer/constants'
 
 enum Page {
   Home,
@@ -39,6 +40,7 @@ const SidePane = ({
 
 const MainView = (): React.ReactElement => {
   const [page, setPage] = useState<Page>(Page.Home)
+  const [cueDocument, setCueDocument] = useState<CueDocument | null>(null)
   return (
     <div className={styles['main-view']}>
       <SidePane
@@ -49,8 +51,16 @@ const MainView = (): React.ReactElement => {
         }}
       />
       <>
-        {page == Page.Home && <Home />}
-        {page == Page.CueEditor && <CuePage />}
+        {page == Page.Home && (
+          <Home
+            onPassCueDocument={(cuedoc) => {
+              setCueDocument(cuedoc)
+              setPage(Page.CueEditor)
+            }}
+          />
+        )}
+        {page == Page.CueEditor &&
+          (cueDocument ? <CuePage cueDoc={cueDocument} /> : <div>Please load a cue document.</div>)}
       </>
     </div>
   )

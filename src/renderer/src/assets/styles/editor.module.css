@@ -1,3 +1,101 @@
+.bg-blue-500 {
+  background-color: #3b82f6;
+}
+.bg-green-500 {
+  background-color: #22c55e;
+}
+.bg-yellow-600 {
+  background-color: #ca8a04;
+}
+
+.bg-cyan-500 {
+  background-color: #06b6d4;
+}
+
+.bg-red-500 {
+  background-color: #ef4444;
+}
+
+.bg-purple-500 {
+  background-color: #a855f7;
+}
+
+.bg-lime-500 {
+  background-color: #84cc16;
+}
+
+.bg-emerald-500 {
+  background-color: #10b981;
+}
+
+.bg-orange-500 {
+  background-color: #f97316;
+}
+
+.bg-rose-500 {
+  background-color: #f43f5e;
+}
+
+.bg-amber-700 {
+  background-color: #b45309;
+}
+
+.bg-teal-500 {
+  background-color: #14b8a6;
+}
+
+.bg-red-700 {
+  background-color: #b91c1c;
+}
+
+.bg-gray-400 {
+  background-color: #9ca3af;
+}
+
+.bg-indigo-500 {
+  background-color: #6366f1;
+}
+
+.bg-yellow-400 {
+  background-color: #facc15;
+}
+
+.bg-brown-500 {
+  background-color: #92400e;
+}
+
+.bg-pink-500 {
+  background-color: #ec4899;
+}
+
+.bg-fuchsia-500 {
+  background-color: #d946ef;
+}
+
+.bg-sky-500 {
+  background-color: #0ea5e9;
+}
+
+.bg-red-400 {
+  background-color: #f87171;
+}
+
+.bg-green-600 {
+  background-color: #16a34a;
+}
+
+.bg-orange-600 {
+  background-color: #ea580c;
+}
+
+.bg-indigo-700 {
+  background-color: #4f46e5;
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb;
+}
+
 .cue-editor-main {
   display: flex;
   flex-direction: column;
