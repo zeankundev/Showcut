@@ -30,6 +30,15 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
     isPlayingRef.current = isPlaying
     durationRef.current = duration
   }, [cues, currentTime, isPlaying, duration])
+  useEffect(() => {
+    if (cueDoc.videoPath) {
+      console.log('[CuePage] video path exists, loading')
+      handleFileLoad(cueDoc.videoPath)
+      setCues(cueDoc.cues)
+    } else {
+      setCues([])
+    }
+  }, [])
   updateTitle(doc.num, doc.title)
   const handleFileLoad = async (filePath: string): Promise<void> => {
     console.log(`[CuePage] Loaded file: ${filePath}`)
@@ -39,7 +48,6 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
       const blob = new Blob([fileBuffer], { type: 'video/mp4' })
       const url = URL.createObjectURL(blob)
       setVideoURL(url)
-      setCues([])
       setCurrentTime(0)
       setIsPlaying(false)
       setSelectedCueId(null)
@@ -233,10 +241,15 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
       cues: cues
     }
     console.log(JSON.stringify(savedData))
-    const path = await window.api.dialog.saveProject()
-    if (path) {
-      console.log(path)
-      window.api.fs.writeFile(path, JSON.stringify(savedData))
+    if (projectPath) {
+      window.api.fs.writeFile(projectPath, JSON.stringify(savedData))
+    } else {
+      const path = await window.api.dialog.saveProject()
+      if (path) {
+        console.log(path)
+        window.api.fs.writeFile(path, JSON.stringify(savedData))
+        setProjectPath(path)
+      }
     }
   }
   return (

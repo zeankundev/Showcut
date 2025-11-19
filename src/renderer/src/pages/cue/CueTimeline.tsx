@@ -202,22 +202,24 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
   return (
     <div className={styles['cue-timeline-container']}>
       <div className={styles['cue-timeline-toolbar']}>
-        <button onClick={onPlayPause} className={styles['cue-timeline-button']}>
-          <img src={isPlaying ? PauseIcon : PlayIcon} width={16} />
-        </button>
-        <button onClick={onSave} className={styles['cue-timeline-button']}>
-          <img src={SaveIcon} width={16} />
-        </button>
-        <div className={styles['cue-timeline-zoom']}>
-          <label>Zoom:</label>
-          <input
-            type="range"
-            min={1}
-            max={20}
-            step={0.1}
-            value={zoom}
-            onChange={(e) => setZoom(Number(e.target.value))}
-          />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button onClick={onPlayPause} className={styles['cue-timeline-button']}>
+            <img src={isPlaying ? PauseIcon : PlayIcon} width={16} />
+          </button>
+          <button onClick={onSave} className={styles['cue-timeline-button']}>
+            <img src={SaveIcon} width={16} />
+          </button>
+          <div className={styles['cue-timeline-zoom']}>
+            <label>Zoom:</label>
+            <input
+              type="range"
+              min={1}
+              max={20}
+              step={0.1}
+              value={zoom}
+              onChange={(e) => setZoom(Number(e.target.value))}
+            />
+          </div>
         </div>
         <span className={styles['cue-timecode']} ref={timeDisplayRef}>
           {formatTime(currentTime)}
