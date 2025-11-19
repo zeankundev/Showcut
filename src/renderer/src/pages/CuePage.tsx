@@ -5,6 +5,7 @@ import FileLoader from './cue/FileLoader'
 import { updateTitle } from '@renderer/TitleUpdater'
 import CueTimeline from './cue/CueTimeline'
 import MediaPreview from './cue/MediaPreview'
+import EditView from './cue/EditView'
 const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
   const [doc, setDoc] = useState<CueDocument>(cueDoc)
   const [cues, setCues] = useState<Cue[]>(cueDoc.cues)
@@ -225,15 +226,29 @@ const CuePage = ({ cueDoc }: { cueDoc: CueDocument }): React.ReactElement => {
         <FileLoader onFileLoad={handleFileLoad} />
       ) : (
         <>
-          <MediaPreview
-            ref={videoRef}
-            src={videoURL}
-            onLoadedMetadata={handleLoadedMetadata}
-            onTimeUpdate={handleTimeUpdate}
-            isPlaying={isPlaying}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-          />
+          <div className={styles['top-container']}>
+            <EditView
+              cues={cues}
+              currentTime={currentTime}
+              selectedCueId={selectedCueId}
+              updateCue={updateCue}
+              deleteCue={deleteCue}
+              addCue={addCueAtPlayhead}
+              onCameraPaletteOpen={() => setIsPalleteOpen(true)}
+              videoRef={videoRef}
+            />
+            <div className={styles['video-workflow']}>
+              <MediaPreview
+                ref={videoRef}
+                src={videoURL}
+                onLoadedMetadata={handleLoadedMetadata}
+                onTimeUpdate={handleTimeUpdate}
+                isPlaying={isPlaying}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+              />
+            </div>
+          </div>
           <CueTimeline
             cues={cues}
             duration={duration}

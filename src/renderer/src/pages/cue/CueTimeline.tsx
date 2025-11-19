@@ -15,6 +15,16 @@ interface CueTimelineProps {
   setSelectedCueId: (id: string | null) => void
   videoRef: React.RefObject<HTMLVideoElement>
 }
+// Function for the full display format: 00:MM:SS.mmm
+const formatTime = (timeInSeconds: number): string => {
+  if (isNaN(timeInSeconds)) return '00:00:00.000'
+  const minutes = parseMinutes(timeInSeconds)
+  const seconds = parseSeconds(timeInSeconds)
+  const milliseconds = parseMilliseconds(timeInSeconds)
+  return `00:${minutes}:${seconds}.${milliseconds}`
+}
+
+// NOTE: Ensure parseMinutes, parseSeconds, and parseMilliseconds are available here.
 
 const formatTimeMarker = (time: number): string => {
   const minutes = Math.floor(time / 60)
@@ -22,6 +32,37 @@ const formatTimeMarker = (time: number): string => {
     .toString()
     .padStart(2, '0')
   return `${minutes}:${seconds}`
+}
+// Parse minutes component
+const parseMinutes = (timeInSeconds: number): string => {
+  if (isNaN(timeInSeconds)) return '00'
+  return Math.floor(timeInSeconds / 60)
+    .toString()
+    .padStart(2, '0')
+}
+
+// Parse seconds component
+const parseSeconds = (timeInSeconds: number): string => {
+  if (isNaN(timeInSeconds)) return '00'
+  return Math.floor(timeInSeconds % 60)
+    .toString()
+    .padStart(2, '0')
+}
+
+// Parse milliseconds component
+const parseMilliseconds = (timeInSeconds: number): string => {
+  if (isNaN(timeInSeconds)) return '000'
+  return Math.floor((timeInSeconds % 1) * 1000)
+    .toString()
+    .padStart(3, '0')
+}
+
+// Original function using the separated parsers
+const formatMinutes = (timeInSeconds: number): string => {
+  const minutes = parseMinutes(timeInSeconds)
+  const seconds = parseSeconds(timeInSeconds)
+  const milliseconds = parseMilliseconds(timeInSeconds)
+  return `${minutes}:${seconds}:${milliseconds}`
 }
 
 const CueTimeline: React.FC<CueTimelineProps> = ({
@@ -35,6 +76,8 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
   videoRef
 }) => {
   const [zoom, setZoom] = useState(1) // 1x to 20x
+  // Add this inside the CueTimeline component body
+  const timeDisplayRef = useRef<HTMLSpanElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const playheadRef = useRef<HTMLDivElement>(null)
 
@@ -55,6 +98,33 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
     updatePlayhead()
     return () => cancelAnimationFrame(animationFrameId)
   }, [duration, videoRef, currentTime])
+
+  useEffect(() => {
+    let animationFrameId: number
+
+    const updateTime = () => {
+      // 1. Directly update DOM for performance.
+      // 2. Pull time from videoRef.current for 60fps accuracy.
+      if (videoRef.current && timeDisplayRef.current) {
+        timeDisplayRef.current.textContent = formatTime(videoRef.current.currentTime)
+      }
+      animationFrameId = requestAnimationFrame(updateTime)
+    }
+
+    updateTime()
+
+    return () => {
+      cancelAnimationFrame(animationFrameId)
+    }
+  }, [videoRef]) // Only depends on videoRef, ensuring it only runs when the component mounts/videoRef changes.
+
+  // --- Fallback/Initial Sync (Optional but Recommended) ---
+  // Ensure it updates when paused or scrubbing via props if the loop isn't running or video is null.
+  useEffect(() => {
+    if (timeDisplayRef.current && (!videoRef.current || videoRef.current.paused)) {
+      timeDisplayRef.current.textContent = formatTime(currentTime)
+    }
+  }, [currentTime, videoRef])
 
   const calculateSnappedTime = (clientX: number, contentEl: HTMLDivElement) => {
     const rect = contentEl.getBoundingClientRect()
@@ -143,6 +213,9 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
             onChange={(e) => setZoom(Number(e.target.value))}
           />
         </div>
+        <span className={styles['cue-timecode']} ref={timeDisplayRef}>
+          {formatTime(currentTime)}
+        </span>
       </div>
       <div
         className={styles['cue-timeline-content']}
