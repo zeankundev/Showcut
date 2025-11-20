@@ -47,7 +47,7 @@ jobs:
           name: Package Electron App
           # Assumes you have a "build" script in package.json that runs electron-builder
           # e.g., "build": "electron-builder"
-          command: yarn build && npx electron-builder --publish always
+          command: yarn build && npx electron-builder
 
       # Save artifacts for successful builds (executables/installers)
       - store_artifacts:
