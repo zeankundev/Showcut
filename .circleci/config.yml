@@ -1,0 +1,47 @@
+version: 2.1
+
+# Define a reusable job for building, packaging, and potentially deploying the app
+jobs:
+  build:
+    # Use an appropriate Node.js image. cimg/node is CircleCI's optimized image.
+    docker:
+      - image: cimg/node:25.2.1
+
+    steps:
+      - checkout
+      
+      # Restore cached node_modules if available
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+
+      - run:
+          name: Install Linux dependencies
+          command: sudo apt install fakeroot wine alien
+
+      - run:
+          name: Install yarn
+          command: sudo npm i -g yarn
+
+      - run:
+          name: Install Dependencies
+          command: yarn
+
+      # Save node_modules cache
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+      # --- Building and Packaging ---
+      # This step packages the Electron application for multiple platforms (e.g., Windows, macOS)
+      # using electron-builder.
+      - run:
+          name: Package Electron App
+          # Assumes you have a "build" script in package.json that runs electron-builder
+          # e.g., "build": "electron-builder"
+          command: yarn build && npx electron-builder --publish always
+
+      # Save artifacts for successful builds (executables/installers)
+      - store_artifacts:
+          path: dist
+          destination: artifacts
