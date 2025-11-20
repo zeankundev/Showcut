@@ -34,12 +34,6 @@ jobs:
           name: Install Dependencies
           command: yarn
 
-      # Save node_modules cache
-      - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-
       # --- Building and Packaging ---
       # This step packages the Electron application for multiple platforms (e.g., Windows, macOS)
       # using electron-builder.
@@ -48,6 +42,10 @@ jobs:
           # Assumes you have a "build" script in package.json that runs electron-builder
           # e.g., "build": "electron-builder"
           command: yarn build && npx electron-builder
+
+      - run:
+          name: Package Windows App
+          command: yarn build && npx electron-builder --win
 
       # Save artifacts for successful builds (executables/installers)
       - store_artifacts:
