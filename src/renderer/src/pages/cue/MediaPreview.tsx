@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 import styles from '../../assets/styles/main.module.css'
 
 interface MediaPreviewProps {

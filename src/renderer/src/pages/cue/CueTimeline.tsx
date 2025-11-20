@@ -59,14 +59,6 @@ const parseMilliseconds = (timeInSeconds: number): string => {
     .padStart(3, '0')
 }
 
-// Original function using the separated parsers
-const formatMinutes = (timeInSeconds: number): string => {
-  const minutes = parseMinutes(timeInSeconds)
-  const seconds = parseSeconds(timeInSeconds)
-  const milliseconds = parseMilliseconds(timeInSeconds)
-  return `${minutes}:${seconds}:${milliseconds}`
-}
-
 const CueTimeline: React.FC<CueTimelineProps> = ({
   cues,
   duration,
@@ -187,7 +179,7 @@ const CueTimeline: React.FC<CueTimelineProps> = ({
 
   const timeMarkers = useMemo(() => {
     if (!duration) return []
-    const markers = []
+    const markers: number[] = []
     // Adjust interval based on zoom to keep markers readable
     // Base interval is ~1/15th of duration at 1x zoom.
     // As zoom increases, we decrease the interval to show more detail.
