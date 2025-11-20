@@ -1,6 +1,5 @@
 appId: dev.zeankun.showcut
 productName: Showcut
-description: A live show recreator
 directories:
   buildResources: build
 files:
