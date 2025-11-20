@@ -19,12 +19,16 @@ jobs:
           command: sudo add-apt-repository -y universe && sudo add-apt-repository -y multiverse
 
       - run:
+          name: Add i386 arch
+          command: sudo dpkg --add-architecture i386
+
+      - run:
           name: Update repo
           command: sudo apt update
 
       - run:
           name: Install Linux dependencies
-          command: sudo apt install fakeroot wine alien
+          command: sudo apt install fakeroot wine wine32:i386 alien
 
       - run:
           name: Install yarn
