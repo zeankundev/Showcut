@@ -114,7 +114,7 @@
   /* MODIFIED: Make it fill remaining horizontal space */
   flex: 1;
   min-width: 0; /* Fix for flex shrinking */
-  height: 89% !important; /* OVERRIDE: Fill parent */
+  height: 100%; /* OVERRIDE: Fill parent */
   overflow: hidden !important; /* OVERRIDE: Clip video */
 }
 .cue-timeline-button {
@@ -288,8 +288,10 @@
 .video-player {
   width: 100%;
   height: 100%;
-  background-color: #000;
+  background-color: var(--color-background);
   position: relative;
+  display: flex;
+  max-height: 512px;
 }
 
 .video-element {

@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import styles from '../../assets/styles/main.module.css'
+import styles from '../../assets/styles/editor.module.css'
 
 interface MediaPreviewProps {
   src: string
